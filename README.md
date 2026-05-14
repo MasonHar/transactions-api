@@ -1,39 +1,44 @@
 # transactions-api
 
-Minimal REST API for transactions (in-memory store). Useful for local development and Docker.
+REST API for credit card transactions using Node.js, Express, and MongoDB. Local development uses Docker and a VS Code Dev Container.
 
-## Prerequisites
+## Data model
 
-- Node.js 20+
-- Docker (optional)
+Each transaction includes `creditCardNickname`, `cardType`, `date`, `amount`, `amendment`, and `comment`. The API is append-only (no PUT, PATCH, or DELETE).
 
 ## Setup
 
+1. Copy `.env` and set:
+
+   - `PORT=3000`
+   - `MONGODB_URI` — local Docker: `mongodb://db:27017/transactionsdb`; production: your Atlas URI with database name in the path (for example `.../transactionsdb`).
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+## Run locally
+
 ```bash
-npm install
+npm run dev
 ```
 
-Optional: add `.env.local` for machine-specific overrides (loaded after `.env`).
-
-## Run
-
-```bash
-npm start
-```
-
-- Health: `GET /health`
-- List: `GET /transactions`
-- Create: `POST /transactions` with JSON `{ "amount": number, "description": string }`
-- Get one: `GET /transactions/:id`
-- Delete: `DELETE /transactions/:id`
-
-## Seed
-
-With the server running:
+Seed sample data:
 
 ```bash
 npm run seed
 ```
+
+## API
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/` | Health message |
+| POST | `/transactions` | Create a transaction |
+| GET | `/transactions` | List (optional query: `date`, `startDate`, `endDate`, `creditCardNickname`) |
+| GET | `/transactions/:id` | Get one by MongoDB `_id` |
 
 ## Docker
 
@@ -43,4 +48,10 @@ docker compose up --build
 
 ## Dev container
 
-Open the repo in VS Code / Cursor and choose “Reopen in Container” when prompted.
+Open the folder in **Visual Studio Code**, then use **Dev Containers: Reopen in Container** so the app and MongoDB run in Compose.
+
+## Heroku
+
+- `Procfile` runs `web: node server.js`.
+- Set `MONGODB_URI` on the app: `heroku config:set MONGODB_URI="..."`.
+- Deploy: `git push heroku main` (from your machine, not inside the container).
