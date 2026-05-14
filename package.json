@@ -2,6 +2,9 @@
   "name": "transactions-api",
   "version": "1.0.0",
   "description": "Simple Express and MongoDB transactions API",
+  "engines": {
+    "node": "20.x"
+  },
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
